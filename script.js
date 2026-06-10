@@ -173,6 +173,37 @@ function drawDandelion(x, y, radius) {
     }
 }
 
+function drawSimpleFlower(x, y, radius) {
+
+    // flower head
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // center
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // horizontal sketch lines
+    for (let yy = -radius + 8; yy <= radius - 8; yy += 10) {
+        ctx.beginPath();
+        ctx.moveTo(x - radius - 15, y + yy);
+        ctx.lineTo(x + radius + 15, y + yy - 2);
+        ctx.stroke();
+    }
+
+    // stem
+    drawStem(x, y + radius, y + radius + 260);
+
+    // leaves
+    drawLeaf(x, y + radius + 90, 45, -1);
+    drawLeaf(x, y + radius + 70, 45, 1);
+
+    drawLeaf(x, y + radius + 150, 50, -1);
+    drawLeaf(x, y + radius + 140, 50, 1);
+}
+
 function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -204,6 +235,26 @@ function draw() {
     drawLeaf(rightX, 340, 85, 1);
     drawLeaf(rightX, 520, 85, 1);
     drawLeaf(rightX, 700, 90, -1);
+
+    // Additional doodle flowers
+
+drawSimpleFlower(
+    canvas.width * 0.12,
+    canvas.height * 0.75,
+    35
+);
+
+drawSimpleFlower(
+    canvas.width * 0.58,
+    canvas.height * 0.18,
+    30
+);
+
+drawSimpleFlower(
+    canvas.width * 0.88,
+    canvas.height * 0.78,
+    38
+);
 }
 
 resize();
