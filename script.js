@@ -1,15 +1,6 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const flowers = [];
-let mouseX = -9999;
-let mouseY = -9999;
-
-canvas.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    draw();
-});
 
 function resize() {
     canvas.width = window.innerWidth;
@@ -68,9 +59,7 @@ function drawLeaf(x, y, size, side = 1) {
 function drawSquareFlower(x, y, size) {
 
     const r = 22;
-   const hovered =
-    Math.hypot(mouseX - x, mouseY - y) < size * 0.22;
-
+   
     ctx.beginPath();
 
     ctx.moveTo(x - size/2 + r, y - size/2);
@@ -146,36 +135,17 @@ function drawSquareFlower(x, y, size) {
             y + Math.sin(a) * size * 0.22
         );
 
-        if (hovered) {
-        ctx.fillStyle = "#fff7b3"; // or pink/blue
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-        }
+      
         ctx.stroke();
     }
 }
 
 function drawDandelion(x, y, radius) {
 
-    const hovered =
-        Math.hypot(mouseX - x, mouseY - y) < radius;
-
-    // Light pink fill when hovered
-    if (hovered) {
-        ctx.fillStyle = "#ffd6e7";
-
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    // Outer circle
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Center circle
     ctx.beginPath();
     ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
     ctx.stroke();
@@ -207,35 +177,7 @@ function drawDandelion(x, y, radius) {
 
 function drawSimpleFlower(x, y, radius) {
 
-    const dx = mouseX - x;
-    const dy = mouseY - y;
-
-    const hovered = Math.sqrt(dx * dx + dy * dy) < radius;
-
-    let fillColor = null;
-
-    if (hovered) {
-
-        const colours = [
-            "#fff7b3", // light yellow
-            "#ffd6e7", // light pink
-            "#dbeeff"  // light blue
-        ];
-
-        const index =
-            Math.abs(Math.floor(x + y)) % colours.length;
-
-        fillColor = colours[index];
-    }
-
-    // coloured flower head
-    if (fillColor) {
-        ctx.fillStyle = fillColor;
-
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
+   
 
     // outline
     ctx.beginPath();
