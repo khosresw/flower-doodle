@@ -149,6 +149,15 @@ function drawSquareFlower(x, y, size) {
 
 function drawDandelion(x, y, radius) {
 
+    const colours = [
+        "#ffd6e7", // light pink
+        "#dbeeff", // light blue
+        "#fff7b3"  // light yellow
+    ];
+
+    const hoverColor =
+        colours[Math.abs(Math.floor(x)) % colours.length];
+
     const innerRadius = radius * 0.35;
 
     const hovered =
@@ -159,9 +168,9 @@ function drawDandelion(x, y, radius) {
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Center circle (pink on hover)
+    // Center circle with pastel hover effect
     if (hovered) {
-        ctx.fillStyle = "#ffd6e7";
+        ctx.fillStyle = hoverColor;
 
         ctx.beginPath();
         ctx.arc(x, y, innerRadius, 0, Math.PI * 2);
@@ -177,9 +186,7 @@ function drawDandelion(x, y, radius) {
     for (let i = 0; i < rays; i++) {
 
         const a = i * Math.PI * 2 / rays;
-
-        const len =
-            radius + 25 + Math.random() * 25;
+        const len = radius + 25 + Math.random() * 25;
 
         ctx.beginPath();
 
