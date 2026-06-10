@@ -180,28 +180,52 @@ function drawSimpleFlower(x, y, radius) {
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // center
+    // center circle
     ctx.beginPath();
-    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
+    ctx.arc(x, y, radius * 0.22, 0, Math.PI * 2);
     ctx.stroke();
 
-    // horizontal sketch lines
-    for (let yy = -radius + 8; yy <= radius - 8; yy += 10) {
+    // sketchy lines around edge like your drawing
+    const rays = 26;
+
+    for (let i = 0; i < rays; i++) {
+
+        const a = i * Math.PI * 2 / rays;
+
+        const startR = radius - 4;
+        const endR = radius + 18 + Math.random() * 8;
+
         ctx.beginPath();
-        ctx.moveTo(x - radius - 15, y + yy);
-        ctx.lineTo(x + radius + 15, y + yy - 2);
+
+        ctx.moveTo(
+            x + Math.cos(a) * startR,
+            y + Math.sin(a) * startR
+        );
+
+        ctx.lineTo(
+            x + Math.cos(a) * endR,
+            y + Math.sin(a) * endR
+        );
+
         ctx.stroke();
     }
 
-    // stem
-    drawStem(x, y + radius, y + radius + 260);
+    // slightly curved stem
+    ctx.beginPath();
+    ctx.moveTo(x, y + radius);
 
-    // leaves
-    drawLeaf(x, y + radius + 90, 45, -1);
-    drawLeaf(x, y + radius + 70, 45, 1);
+    ctx.quadraticCurveTo(
+        x + 10,
+        y + radius + 120,
+        x + 5,
+        y + radius + 260
+    );
 
-    drawLeaf(x, y + radius + 150, 50, -1);
-    drawLeaf(x, y + radius + 140, 50, 1);
+    ctx.stroke();
+
+    // leaves like the sketch
+    drawLeaf(x + 5, y + radius + 90, 35, 1);
+    drawLeaf(x + 5, y + radius + 150, 35, -1);
 }
 
 function draw() {
