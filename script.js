@@ -1,7 +1,14 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+let mouseX = -9999;
+let mouseY = -9999;
 
+canvas.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    draw();
+});
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -142,12 +149,27 @@ function drawSquareFlower(x, y, size) {
 
 function drawDandelion(x, y, radius) {
 
+    const innerRadius = radius * 0.35;
+
+    const hovered =
+        Math.hypot(mouseX - x, mouseY - y) < innerRadius;
+
+    // Outer circle
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
+    // Center circle (pink on hover)
+    if (hovered) {
+        ctx.fillStyle = "#ffd6e7";
+
+        ctx.beginPath();
+        ctx.arc(x, y, innerRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
     ctx.beginPath();
-    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
+    ctx.arc(x, y, innerRadius, 0, Math.PI * 2);
     ctx.stroke();
 
     const rays = 55;
