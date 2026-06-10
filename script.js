@@ -1,155 +1,167 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    draw();
+}
 
-ctx.lineWidth = 2;
-ctx.strokeStyle = "#222";
+window.addEventListener("resize", resize);
 
-function drawLeaf(x, y, w, h, angle = 0) {
+function drawStem(x, y1, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.stroke();
+}
+
+function drawLeaf(x, y, size, side = 1) {
     ctx.save();
+
     ctx.translate(x, y);
-    ctx.rotate(angle);
+    ctx.rotate(side * 0.5);
 
     ctx.beginPath();
-    ctx.moveTo(-w / 2, 0);
+    ctx.moveTo(0, 0);
 
     ctx.quadraticCurveTo(
-        0,
-        -h / 2,
-        w / 2,
+        size * 0.6,
+        -size * 0.45,
+        size,
         0
     );
 
     ctx.quadraticCurveTo(
+        size * 0.6,
+        size * 0.45,
         0,
-        h / 2,
-        -w / 2,
         0
     );
 
     ctx.stroke();
 
-    // center vein
     ctx.beginPath();
-    ctx.moveTo(-w / 2, 0);
-    ctx.lineTo(w / 2, 0);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(size, 0);
 
-    // side veins
-    for (let i = -2; i <= 2; i++) {
-        ctx.moveTo(i * w / 6, 0);
-        ctx.lineTo(i * w / 6 + 8, -8);
+    for (let i = 0.2; i < 1; i += 0.2) {
+        ctx.moveTo(size * i, 0);
+        ctx.lineTo(size * i + 8, -8);
     }
 
     ctx.stroke();
+
     ctx.restore();
 }
 
 function drawSquareFlower(x, y, size) {
-    // stem
-    ctx.beginPath();
-    ctx.moveTo(x, y + size / 2);
-    ctx.lineTo(x, y + 220);
-    ctx.stroke();
 
-    // flower box
+    const r = 22;
+
     ctx.beginPath();
 
-    ctx.moveTo(x - size / 2 + 10, y - size / 2);
-    ctx.lineTo(x + size / 2 - 10, y - size / 2);
+    ctx.moveTo(x - size/2 + r, y - size/2);
+
+    ctx.lineTo(x + size/2 - r, y - size/2);
 
     ctx.quadraticCurveTo(
-        x + size / 2,
-        y - size / 2,
-        x + size / 2,
-        y - size / 2 + 10
+        x + size/2,
+        y - size/2,
+        x + size/2,
+        y - size/2 + r
     );
 
-    ctx.lineTo(x + size / 2, y + size / 2 - 10);
+    ctx.lineTo(x + size/2, y + size/2 - r);
 
     ctx.quadraticCurveTo(
-        x + size / 2,
-        y + size / 2,
-        x + size / 2 - 10,
-        y + size / 2
+        x + size/2,
+        y + size/2,
+        x + size/2 - r,
+        y + size/2
     );
 
-    ctx.lineTo(x - size / 2 + 10, y + size / 2);
+    ctx.lineTo(x - size/2 + r, y + size/2);
 
     ctx.quadraticCurveTo(
-        x - size / 2,
-        y + size / 2,
-        x - size / 2,
-        y + size / 2 - 10
+        x - size/2,
+        y + size/2,
+        x - size/2,
+        y + size/2 - r
     );
 
-    ctx.lineTo(x - size / 2, y - size / 2 + 10);
+    ctx.lineTo(x - size/2, y - size/2 + r);
 
     ctx.quadraticCurveTo(
-        x - size / 2,
-        y - size / 2,
-        x - size / 2 + 10,
-        y - size / 2
+        x - size/2,
+        y - size/2,
+        x - size/2 + r,
+        y - size/2
     );
 
     ctx.stroke();
 
     // sketch shading
-    for (let i = -size / 2; i < size / 2; i += 8) {
+    for (let i = -size/2 + 5; i < size/2 - 5; i += 8) {
         ctx.beginPath();
-        ctx.moveTo(x - size / 2 + 5, y + i);
-        ctx.lineTo(x - size / 2 + 20, y + i + 10);
+        ctx.moveTo(x - size/2 + 8, y + i);
+        ctx.lineTo(x - size/2 + 30, y + i + 18);
         ctx.stroke();
     }
 
-    // center circle
+    // outer circle
     ctx.beginPath();
-    ctx.arc(x, y, 14, 0, Math.PI * 2);
+    ctx.arc(x, y, size * 0.22, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // center
+    ctx.beginPath();
+    ctx.arc(x, y, size * 0.08, 0, Math.PI * 2);
     ctx.stroke();
 
     // petals
-    const petals = 16;
-
-    for (let i = 0; i < petals; i++) {
-        const a = (Math.PI * 2 * i) / petals;
+    for (let i = 0; i < 16; i++) {
+        const a = i * Math.PI * 2 / 16;
 
         ctx.beginPath();
         ctx.moveTo(
-            x + Math.cos(a) * 14,
-            y + Math.sin(a) * 14
+            x + Math.cos(a) * size * 0.08,
+            y + Math.sin(a) * size * 0.08
         );
 
         ctx.lineTo(
-            x + Math.cos(a) * 40,
-            y + Math.sin(a) * 40
+            x + Math.cos(a) * size * 0.22,
+            y + Math.sin(a) * size * 0.22
         );
 
         ctx.stroke();
     }
 }
 
-function drawDandelion(x, y) {
-    // stem
+function drawDandelion(x, y, radius) {
+
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x, y + 250);
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // center
     ctx.beginPath();
-    ctx.arc(x, y, 18, 0, Math.PI * 2);
+    ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
     ctx.stroke();
 
-    // fuzzy rays
-    for (let i = 0; i < 60; i++) {
-        const a = (Math.PI * 2 * i) / 60;
-        const len = 50 + Math.random() * 25;
+    const rays = 55;
+
+    for (let i = 0; i < rays; i++) {
+
+        const a = i * Math.PI * 2 / rays;
+
+        const len =
+            radius + 25 + Math.random() * 25;
 
         ctx.beginPath();
+
         ctx.moveTo(
-            x + Math.cos(a) * 18,
-            y + Math.sin(a) * 18
+            x + Math.cos(a) * radius * 0.7,
+            y + Math.sin(a) * radius * 0.7
         );
 
         ctx.lineTo(
@@ -161,17 +173,37 @@ function drawDandelion(x, y) {
     }
 }
 
-// LEFT FLOWERS
-drawSquareFlower(300, 180, 130);
-drawSquareFlower(340, 360, 110);
+function draw() {
 
-// leaves
-drawLeaf(210, 450, 70, 35, -0.7);
-drawLeaf(330, 620, 95, 40, -0.3);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-// RIGHT DANDELION
-drawDandelion(800, 160);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#111";
 
-drawLeaf(900, 340, 70, 30, -0.2);
-drawLeaf(900, 460, 75, 30, -0.3);
-drawLeaf(720, 520, 100, 35, 0.1);
+    const leftX = canvas.width * 0.28;
+    const middleX = canvas.width * 0.45;
+    const rightX = canvas.width * 0.72;
+
+    // Left flower
+    drawSquareFlower(leftX, 160, 170);
+    drawStem(leftX, 245, canvas.height - 40);
+
+    drawLeaf(leftX, 420, 80, -1);
+    drawLeaf(leftX, 590, 75, 1);
+
+    // Middle flower
+    drawSquareFlower(middleX, 330, 140);
+    drawStem(middleX, 400, canvas.height - 40);
+
+    drawLeaf(middleX, 700, 70, 1);
+
+    // Right flower
+    drawDandelion(rightX, 150, 55);
+    drawStem(rightX, 205, canvas.height - 40);
+
+    drawLeaf(rightX, 340, 85, 1);
+    drawLeaf(rightX, 520, 85, 1);
+    drawLeaf(rightX, 700, 90, -1);
+}
+
+resize();
