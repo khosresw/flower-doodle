@@ -1,6 +1,16 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const flowers = [];
+let mouseX = -9999;
+let mouseY = -9999;
+
+canvas.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    draw();
+});
+
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -58,6 +68,8 @@ function drawLeaf(x, y, size, side = 1) {
 function drawSquareFlower(x, y, size) {
 
     const r = 22;
+    const hovered =
+    Math.hypot(mouseX - x, mouseY - y) < radius;
 
     ctx.beginPath();
 
@@ -134,6 +146,12 @@ function drawSquareFlower(x, y, size) {
             y + Math.sin(a) * size * 0.22
         );
 
+        if (hovered) {
+        ctx.fillStyle = "#fff7b3"; // or pink/blue
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        }
         ctx.stroke();
     }
 }
@@ -175,17 +193,47 @@ function drawDandelion(x, y, radius) {
 
 function drawSimpleFlower(x, y, radius) {
 
-    // flower head
+    const dx = mouseX - x;
+    const dy = mouseY - y;
+
+    const hovered = Math.sqrt(dx * dx + dy * dy) < radius;
+
+    let fillColor = null;
+
+    if (hovered) {
+
+        const colours = [
+            "#fff7b3", // light yellow
+            "#ffd6e7", // light pink
+            "#dbeeff"  // light blue
+        ];
+
+        const index =
+            Math.abs(Math.floor(x + y)) % colours.length;
+
+        fillColor = colours[index];
+    }
+
+    // coloured flower head
+    if (fillColor) {
+        ctx.fillStyle = fillColor;
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // outline
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // center circle
+    // center
     ctx.beginPath();
     ctx.arc(x, y, radius * 0.22, 0, Math.PI * 2);
     ctx.stroke();
 
-    // sketchy lines around edge like your drawing
+    // sketchy spikes
     const rays = 26;
 
     for (let i = 0; i < rays; i++) {
@@ -210,7 +258,7 @@ function drawSimpleFlower(x, y, radius) {
         ctx.stroke();
     }
 
-    // slightly curved stem
+    // stem
     ctx.beginPath();
     ctx.moveTo(x, y + radius);
 
@@ -223,7 +271,6 @@ function drawSimpleFlower(x, y, radius) {
 
     ctx.stroke();
 
-    // leaves like the sketch
     drawLeaf(x + 5, y + radius + 90, 35, 1);
     drawLeaf(x + 5, y + radius + 150, 35, -1);
 }
