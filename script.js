@@ -68,8 +68,8 @@ function drawLeaf(x, y, size, side = 1) {
 function drawSquareFlower(x, y, size) {
 
     const r = 22;
-    const hovered =
-    Math.hypot(mouseX - x, mouseY - y) < radius;
+   const hovered =
+    Math.hypot(mouseX - x, mouseY - y) < size * 0.22;
 
     ctx.beginPath();
 
@@ -158,10 +158,24 @@ function drawSquareFlower(x, y, size) {
 
 function drawDandelion(x, y, radius) {
 
+    const hovered =
+        Math.hypot(mouseX - x, mouseY - y) < radius;
+
+    // Light pink fill when hovered
+    if (hovered) {
+        ctx.fillStyle = "#ffd6e7";
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Outer circle
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
+    // Center circle
     ctx.beginPath();
     ctx.arc(x, y, radius * 0.35, 0, Math.PI * 2);
     ctx.stroke();
